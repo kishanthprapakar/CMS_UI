@@ -6,14 +6,11 @@ import {
   Button,
   Box,
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
   MenuItem,
   Grid,
-  FormHelperText,
-  FormControlLabel,
   IconButton,
   Popover,
   Slide,
@@ -25,14 +22,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Autocomplete,
   MenuList,
-  Collapse,
-  Fade,
 } from "@mui/material";
 
 import "@fontsource/poppins";
@@ -41,12 +32,11 @@ import { useNavigate } from "react-router-dom";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { forwardRef } from "react";
 import companyLogo from "../assets/company_logo.jpg";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditViewIcon from "../assets/editViewIcon.png";
-import EditIcons from "../assets/EditIcon.png";
+import HistoryReportViewIcon from "../assets/HistoryReportViewIcon.png";
+import EditIcons from "../assets/histotyReportEditIcon.png";
 
 //date picker
 // import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -77,12 +67,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import axios from "axios";
-import { fontFamily, textTransform } from "@mui/system";
-import { Spinner } from "@heroui/react";
-import EditIcon from "@mui/icons-material/Edit";
 
 const DashBoard = () => {
-  // //logout state
+
+  //logout state
   const [anchorLogoutEl, setAnchorLogoutEl] = useState(null);
   const [dialogLogoutOpen, setDialogLogoutOpen] = useState(false);
   const navigate = useNavigate();
@@ -138,84 +126,72 @@ const DashBoard = () => {
 
   const popoverLogoutOpen = Boolean(anchorLogoutEl);
 
-  // const graphOptions = [
-  //   "Pie Chart",
-  //   "Column graph",
-  //   "Line chart",
-  //   "Bar chart",
-  //   "Activity",
-  //   "Activity - Online",
-  //   "Progressive Pricing",
-  //   "Activity - Online - Telecoms",
-  //   "Activity with Sellers",
-  //   "Banner Ad Report",
-  // ];
-
   const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
   });
 
-  //piechart
-  const pieData = [
-    { name: "Group A", value: 400 },
-    { name: "Group B", value: 300 },
-    { name: "Group C", value: 300 },
-    { name: "Group D", value: 200 },
-  ];
+  // //piechart
+  // const pieData = [
+  //   { name: "Group A", value: 400 },
+  //   { name: "Group B", value: 300 },
+  //   { name: "Group C", value: 300 },
+  //   { name: "Group D", value: 200 },
+  // ];
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  // const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-  //line chart
-  const lineData = [
-    { name: "Jan", uv: 400, pv: 240 },
-    { name: "Feb", uv: 300, pv: 456 },
-    { name: "Mar", uv: 200, pv: 139 },
-  ];
+  // //line chart
+  // const lineData = [
+  //   { name: "Jan", uv: 400, pv: 240 },
+  //   { name: "Feb", uv: 300, pv: 456 },
+  //   { name: "Mar", uv: 200, pv: 139 },
+  // ];
 
-  //bar chart
-  const barData = [
-    { name: "Page A", uv: 3000, pv: 1398 },
-    { name: "Page B", uv: 2000, pv: 9800 },
-    { name: "Page C", uv: 2780, pv: 3908 },
-  ];
+  // //bar chart
+  // const barData = [
+  //   { name: "Page A", uv: 3000, pv: 1398 },
+  //   { name: "Page B", uv: 2000, pv: 9800 },
+  //   { name: "Page C", uv: 2780, pv: 3908 },
+  // ];
 
-  //column chart
-  const columnData = [
-    { name: "A", value: 120 },
-    { name: "B", value: 98 },
-    { name: "C", value: 86 },
-  ];
+  // //column chart
+  // const columnData = [
+  //   { name: "A", value: 120 },
+  //   { name: "B", value: 98 },
+  //   { name: "C", value: 86 },
+  // ];
 
-  //test data integration
-  const chartTypes = [
-    "Pie Chart",
-    "Column Graph",
-    "Line Chart",
-    "Bar Chart",
-    "Activity",
-    "Activity - Online",
-    "Progressive Pricing",
-    "Activity - Online - Telecoms",
-    "Activity with Sellers",
-    "Banner Ad Report",
-  ];
-
-  const categories = ["Electronics", "Appliances"];
-
-  const subCategoriesMap = {
-    Electronics: ["Mobile", "Laptop"],
-    Appliances: ["Refrigerator"],
-  };
-
-  const [open, setOpen] = useState(false);
-  // const [chartType, setChartType] = useState("");
+//dropdown states
+  const [reportName, setReportName] = useState("");
   const [country, setCountry] = useState("");
   const [category, setCategory] = useState();
   const [subCategory, setSubCategory] = useState("");
-  const [reportName, setReportName] = useState("");
   const [model, setModel] = useState("");
   const [brand, setBrand] = useState("");
   const [retailer, setRetailer] = useState("");
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [dateType, setDateType] = useState(null);
+
+      //state for data fetching
+  const [apiCountries, setApiCountries] = useState([]);
+  const [apiCategories, setApiCategories] = useState([]);
+  const [apiSubCategories, setApiSubCategories] = useState([]);
+  const [apiModels, setApiModels] = useState([]);
+  const [apiBrands, setApiBrands] = useState([]);
+  const [apiRetailers, setApiRetailers] = useState([]);
+
+    //static options for date types
+    const dateTypeOptions = [
+      "MTD",
+      "QTD",
+      "Q1",
+      "Q2",
+      "Q3",
+      "Q4",
+      "last_week",
+      "last_month",
+    ];
 
   const handleSubmit = () => {
     setSubmitLoader(true);
@@ -236,7 +212,6 @@ const DashBoard = () => {
 
     const queryParams = {
       report_name: reportName,
-      // chart_type: selectedChart?.name,
       country: selectedCountry?.name,
       category: selectedCategory?.name,
       subcategory: selectedSubCategory?.name,
@@ -252,40 +227,17 @@ const DashBoard = () => {
       queryParams.date_type = dateType;
     }
 
-    console.log("queryparams", queryParams);
-
-    // if (endDate !== null) {
-    //   queryParams.end_date = format(endDate, "yyyy-MM-dd");
-    // }
-
-    // //new change
-    // const selections = getSelectedParams();
-
-    // if (!selections) {
-    //   alert("Please select all required fields before submitting.");
-    //   return;
-    // }
-
-    // const { queryParams } = selections;
-
-    // // Optional: add report name to params
-    // const submitParams = {
-    //   ...queryParams,
-    //   // report_name: reportName,
-    // };
+    // console.log("queryparams", queryParams);
 
     axios
       .get("http://192.168.172.227:8000/api/submit", { params: queryParams })
       .then((res) => {
+
         console.log("API Response", res.data);
         setReportData(res.data);
         setShowReportDialog(true);
         setIsSubmitted(true);
 
-        // if (reportId) {
-        //   //Make your second API call here using the returned report_id
-        //   handleDeleteReport(reportId);
-        // }
       })
       .catch((err) => {
         console.error("Failed to fetch report data:", err);
@@ -297,137 +249,6 @@ const DashBoard = () => {
 
     // setSubmitLoader(false); // Hide spinner
   };
-
-  //static options for date types
-  const dateTypeOptions = [
-    "MTD",
-    "QTD",
-    "Q1",
-    "Q2",
-    "Q3",
-    "Q4",
-    "last_week",
-    "last_month",
-  ];
-
-  //handle download
-  // const handleDownload = () => {
-
-  //   // const selectedCountry = apiCountries.find((c) => c.id === country);
-  //   // const selectedCategory = apiCategories.find((c) => c.id === category);
-  //   // const selectedSubCategory = apiSubCategories.find(
-  //   //   (c) => c.id === subCategory
-  //   // );
-  //   // const selectedModel = apiModels.find((p) => p.id === model);
-  //   // const selectedBrand = apiBrands.find((m) => m.id === brand);
-  //   // const selectedRetailer = apiRetailers.find((r) => r.id === retailer);
-
-  //   // console.log("Selected Country:", selectedCountry);
-  //   // console.log("Selected Category:", selectedCategory);
-  //   // console.log("Selected SubCategory:", selectedSubCategory);
-  //   // console.log("Selected Model:", selectedModel);
-  //   // console.log("Selected Brand:", selectedBrand);
-  //   // console.log("Selected Retailer:", selectedRetailer);
-
-  //   // if (
-  //   //   !selectedCountry ||
-  //   //   !selectedCategory ||
-  //   //   !selectedSubCategory ||
-  //   //   !selectedModel ||
-  //   //   !selectedBrand ||
-  //   //   !selectedRetailer
-  //   // ) {
-  //   //   alert("Please select all required fields before downloading.");
-  //   //   return;
-  //   // }
-
-  //   // const queryParams = {
-  //   //   country: selectedCountry?.name,
-  //   //   category: selectedCategory?.name,
-  //   //   subcategory: selectedSubCategory?.name,
-  //   //   model: selectedModel?.model_no,
-  //   //   brand: selectedBrand?.name,
-  //   //   retailer: selectedRetailer?.name,
-  //   // };
-
-  //   //new change
-  //   const selections = getSelectedParams();
-
-  // // if (!selections) {
-  // //   alert("Please select all required fields before downloading.");
-  // //   return;
-  // // }
-
-  // const { selectedBrand, queryParams } = selections;
-  //   setDownloading(true); // Start spinner
-
-  //   axios
-  //     .get("http://192.168.172.227:8000/api/export-csv", {
-  //       params: queryParams,
-  //       responseType: "blob",
-  //     })
-  //     .then((response) => {
-  //       const blob = new Blob([response.data], { type: "text/csv" });
-  //       const url = window.URL.createObjectURL(blob);
-  //       const link = document.createElement("a");
-  //       link.href = url;
-  //       link.setAttribute("download", `${selectedBrand?.name}_report.csv`);
-  //       document.body.appendChild(link);
-  //       link.click();
-  //       link.remove();
-  //       window.URL.revokeObjectURL(url);
-  //     })
-  //     .catch((err) => {
-  //       console.error("CSV download failed:", err);
-  //       alert("Failed to download CSV. Please try again.");
-  //     })
-  //     .finally(() => {
-  //       setDownloading(false); // Stop spinner
-  //     });
-  // };
-
-  //   .then((response) => {
-  //     const newReport = {
-  //       name: reportName,
-  //       data: response.data.data,
-  //     };
-
-  //     setSubmittedReports((prev) => [...prev, newReport]); // append new report
-  //     handleCloseDialog();
-  //   })
-  //   .catch((error) => {
-  //     console.error("Error fetching report data:", error);
-  //   });
-  // };
-
-  //download csv
-  // const handleDownloadRow = async (rowData) => {
-  //     try {
-  //       // Only send the relevant data properties to the server
-  //       const filteredRowData = {
-  //         country: rowData.country,
-  //         category: rowData.category,
-  //         subcategory: rowData.subcategory,
-  //         brand: rowData.brand,
-  //         model: rowData.model,
-  //         retailer: rowData.retailer,
-  //         price: rowData.price,
-  //       };
-  //     const response = await axios.post("http://192.168.172.227:8000/api/export-csv", rowData, {
-  //       responseType: "blob", // important to handle file downloads
-  //     });
-
-  //     const blob = new Blob([response.data], { type: "text/csv" });
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = "report_row.csv";
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (error) {
-  //     console.error("CSV Download Failed", error);
-  //   }
-  // };
 
   //download csv && download pdf button
   const [anchorEl, setAnchorEl] = useState(null);
@@ -445,7 +266,7 @@ const DashBoard = () => {
     handleClose(); // Close popover first
     setDownloading(true);
     try {
-      await handleDownloadRow(); // your existing download function
+      await handleDownloadCsvFile();
     } finally {
       setDownloading(false);
     }
@@ -454,9 +275,9 @@ const DashBoard = () => {
   const handleDownloadPDF = async () => {
     handleClose(); // Close popover
     setDownloading(true);
-    // you can add your PDF logic here
+    
     try {
-      await handleDownloadCol(); // your existing download function
+      await handleDownloadPdfFile();
     } finally {
       setDownloading(false);
     }
@@ -475,7 +296,7 @@ const DashBoard = () => {
 
   const openn = Boolean(anchorEl);
 
-  const handleDownloadRow = async () => {
+  const handleDownloadCsvFile = async () => {
     try {
       // Only send the relevant data properties to the server
       const selectedCountry = apiCountries.find((c) => c.id === country);
@@ -493,7 +314,6 @@ const DashBoard = () => {
 
       const queryParams = {
         // report_name: reportName,
-        // chart_type: selectedChart?.name,
         country: selectedCountry?.name,
         category: selectedCategory?.name,
         subcategory: selectedSubCategory?.name,
@@ -522,8 +342,6 @@ const DashBoard = () => {
       const a = document.createElement("a");
       a.href = url;
 
-      // Format: BRANDNAME_Report.csv (e.g., BREVILLE_Report.csv)
-      // const brandSafe = (rowData.brand || "Report").replace(/\s+/g, "_");
       a.download = `${selectedbrand.name}_Report.csv`;
 
       a.click();
@@ -533,7 +351,7 @@ const DashBoard = () => {
     }
   };
 
-  const handleDownloadCol = async () => {
+  const handleDownloadPdfFile = async () => {
     try {
       // Only send the relevant data properties to the server
       const selectedCountry = apiCountries.find((c) => c.id === country);
@@ -551,7 +369,6 @@ const DashBoard = () => {
 
       const queryParams = {
         // report_name: reportName,
-        // chart_type: selectedChart?.name,
         country: selectedCountry?.name,
         category: selectedCategory?.name,
         subcategory: selectedSubCategory?.name,
@@ -580,8 +397,6 @@ const DashBoard = () => {
       const a = document.createElement("a");
       a.href = url;
 
-      // Format: BRANDNAME_Report.csv (e.g., BREVILLE_Report.csv)
-      // const brandSafe = (rowData.brand || "Report").replace(/\s+/g, "_");
       a.download = `${selectedbrand.name}_Report.pdf`;
 
       a.click();
@@ -608,7 +423,6 @@ const DashBoard = () => {
 
       const queryParams = {
         // report_name: reportName,
-        // chart_type: selectedChart?.name,
         country: selectedCountry?.name,
         category: selectedCategory?.name,
         subcategory: selectedSubCategory?.name,
@@ -646,25 +460,10 @@ const DashBoard = () => {
       console.error("CSV Download Failed", error);
     }
   };
-  //state for data fetching
-  // const [apiChartTypes, setApiChartTypes] = useState([]);
-  const [apiCountries, setApiCountries] = useState([]);
-  const [apiCategories, setApiCategories] = useState([]);
-  const [apiSubCategories, setApiSubCategories] = useState([]);
-  const [apiModels, setApiModels] = useState([]);
-  const [apiBrands, setApiBrands] = useState([]);
-  const [apiRetailers, setApiRetailers] = useState([]);
-
-  // const [submittedReports, setSubmittedReports] = useState([]);
-
-  // const [submittedReportName, setSubmittedReportName] = useState("");
 
   //report list
   const [reportData, setReportData] = useState([]);
   const [showReportDialog, setShowReportDialog] = useState(false);
-
-  //Accordian
-  const [expanded, setExpanded] = useState(false);
 
   //loading
   const [loadingCategories, setLoadingCategories] = useState(false);
@@ -673,8 +472,7 @@ const DashBoard = () => {
   //download loading
   const [downloading, setDownloading] = useState(false);
 
-  //fetch data
-  //
+  //fetch data from API for dropdowns
 
   const fetchCountries = async () => {
     try {
@@ -771,13 +569,8 @@ const DashBoard = () => {
     fetchCountries();
   }, []);
 
-  //start date state
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
 
-  //date types
-  const [dateType, setDateType] = useState(null);
-
+  //date type styles
   const StyledDatePicker = styled(DatePicker)({
     width: "86%",
     height: "100%",
@@ -993,7 +786,7 @@ const DashBoard = () => {
     setRetailer(filters.retailer?.[0]?.id || "");
     setBrand(filters.brand?.[0]?.id || "");
     console.log(category, "jkl");
-    const modelValue = filters.model?.[0];
+    const modelValue = filters.model?.[0]?.id;
     setModel(modelValue !== null && modelValue !== undefined ? modelValue : "");
 
     if (filters.date_type) {
@@ -1055,7 +848,7 @@ const DashBoard = () => {
               filters.subCategory[0].id
             );
 
-            if (filters.model?.[0]) {
+            if (filters.model?.[0]?.id) {
               await fetchModels(
                 filters.category[0].id,
                 filters.subCategory[0].id,
@@ -1075,48 +868,6 @@ const DashBoard = () => {
     }
   };
 
-  //handleupdate
-  // const handleUpdate = async (selectedReportIdEdit) => {
-  //   const token = localStorage.getItem("access_token");
-
-  //   if(!token){
-  //     alert("User not authenticated");
-  //     return;
-  //   }
-
-  //   const payload = {
-  //     report_name : reportName,
-  //     country: country,
-  //   category: category,
-  //   subcategory: subCategory,
-  //   brand: brand,
-  //   model: model,
-  //   retailer: retailer,
-  //   start_date: startDate ? startDate.toISOString().split('T')[0] : null,
-  //   end_date: endDate ? endDate.toISOString().split('T')[0] : null,
-  //   date_type: dateType,
-  //   };
-
-  //   try {
-  //     const response = await axios.put(`http://192.168.172.227:8000/api/report/update/${selectedReportIdEdit}`,
-  //     payload,
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-  //     console.log("Update Success:", response.data);
-  //   alert("Report updated successfully!");
-
-  //   setIsEditMode(false); // Exit edit mode
-  //   setShowForm(false); // Close form
-  //   setIsSubmitted(true);
-  //   } catch (error){
-  //     console.error("Error updating report:", error);
-  //   alert(error.response?.data?.detail || "Failed to update report.");
-  //   }
-  // }
   const handleUpdate = async (selectedReportIdEdit) => {
     const token = localStorage.getItem("access_token");
     console.log("idddddd", selectedReportIdEdit);
@@ -1363,34 +1114,6 @@ const DashBoard = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      {/* <Accordion
-          expanded={expanded}
-          onChange={() => setExpanded(!expanded)}
-          // sx={{p:1}}
-          
-          
-        > */}
-      {/* <AccordionSummary
-            // expandIcon={<ExpandMoreIcon sx={{color: "#FFFF"}}/>}
-            sx={{ backgroundColor: "white", color: "#1976D2",
-              minHeight: "48px", // Fixes height change
-    '&.Mui-expanded': {
-      minHeight: "48px", // Prevents height increase when expanded
-    },
-    '& .MuiAccordionSummary-content': {
-      margin: 0,
-    },
-    '& .MuiAccordionSummary-content.Mui-expanded': {
-      margin: 0, // Removes extra margin when expanded
-    },
-    // borderRadius : 2
-             }}
-          >
-            <Typography fontWeight={500} fontFamily="Poppins">
-              + Add Report
-            </Typography>
-          </AccordionSummary> */}
-      {/* <AccordionDetails> */}
 
       <Box
         display="flex"
@@ -2638,7 +2361,7 @@ const DashBoard = () => {
                           key={report.iddd}
                         >
                           <img
-                            src={EditViewIcon}
+                            src={HistoryReportViewIcon}
                             alt="Edit View"
                             style={{ width: 24, height: 24 }}
                           />
@@ -2685,15 +2408,7 @@ const DashBoard = () => {
           },
         }}
       >
-        {/* <DialogTitle sx={{
-      fontFamily: "Poppins",
-      fontSize: "1.5rem",
-      textAlign: "center",
-      pb:3
-    }}
-    >
-              Delete Confirmation
-            </DialogTitle> */}
+
         <DialogContent sx={{ pt: 3.5, pb: 0 }}>
           <Typography sx={{ fontFamily: "Poppins" }}>
             Do you want to delete?
