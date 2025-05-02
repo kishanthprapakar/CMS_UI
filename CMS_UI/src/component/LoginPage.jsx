@@ -7,35 +7,42 @@ import {
   Grid,
   Paper,
   Stack,
-  Container,
   InputAdornment,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
-import {createReport} from '../Services/apiServices.js';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import '@fontsource/poppins';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import animationn from '../assets/animation_image.json'
 import Lottie from "lottie-react";
-// import loginAnimation from '../assets/animation_loginpage.json';
 import companyLogo from '../assets/company_logo.jpg';
 import PersonIcon from '@mui/icons-material/Person';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import backgroundLoginImage from '../assets/background_login.png';
 import loginAnimation from '../assets/loginAnimation.json';
 
+
 const LoginPage = () => {
+
+  //username && password state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  //forgot password
+  const [openForgotDialog, setOpenForgotDialog] = useState(false);
+  const [openResetDialog, setOpenResetDialog] = useState(false);
+  const [email, setEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http://192.168.172.227:8000/auth/login", {
+      const response = await axios.post('http://192.168.172.227:8000/auth/login', {
         username: username,
         password: password,
       });
@@ -65,16 +72,13 @@ const LoginPage = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "97vh",
-    //     backgroundImage: {backgroundLoginImage},
-    //     backgroundSize: "cover",
-    // backgroundPosition: "center",
+        height: "100vh",
         // /* background: "linear-gradient(180deg,rgb(33, 66, 163) 0%,rgb(73, 156, 225) 100%)",px: 2,*/
-        background: "linear-gradient( 132.6deg,  rgba(71,139,214,1) 23.3%, rgba(37,216,211,1) 84.7% );linear-gradient( 109.6deg,  rgba(30,198,198,1) 11.3%, rgba(47,127,164,1) 50.1%, rgba(6,92,147,1) 100.2% );radial-gradient( circle 950px at 2.5% 8%,  rgba(44,103,176,1) 0%, rgba(35,56,136,1) 90% );"
+        background: "linear-gradient( 132.6deg,  rgba(71,139,214,1) 23.3%, rgba(37,216,211,1) 84.7%);linear-gradient( 109.6deg,  rgba(30,198,198,1) 11.3%, rgba(47,127,164,1) 50.1%, rgba(6,92,147,1) 100.2% );radial-gradient( circle 950px at 2.5% 8%,  rgba(44,103,176,1) 0%, rgba(35,56,136,1) 90% );"
+        // background: "white"
       }}
-      
     >
-    {/* <Container sx={{alignItems: "center", justifyContent: "center", display: "flex", minHeight:"100vh", overflow: "hidden"}}> */}
+
         <Grid container spacing={4}
         justifyContent="center"
         alignItems="center"
@@ -87,40 +91,14 @@ const LoginPage = () => {
               justifyContent: "flex-end",
               alignItems: "center",
               backgroundColor: "#fff",
-              height: 380,
+              height: 0,
             //   p: 2,
             spacing:2
             }}
           >
-            {/* <Paper
-            elevation={4}
-            sx={{
-              borderRadius: 5,
-              // p: 2,
-              height: 400,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          > */}
-            {/* <Box component="img" src={man} alt="Illustration" sx={{ width: "80%", height:"80%"}} /> */}
-            {/* <DotLottieReact
-      src={animation}
-      loop
-      autoplay
-    /> */}
-           <Lottie animationData={loginAnimation} loop={true} />
-          {/* <Box sx={{ width: '100%', height: '100%', borderRadius: 2, overflow: 'hidden' }}>
-  <video
-    src={animation}
-    autoPlay
-    loop
-    muted
-    playsInline
-    style={{ width: '100%', height: '100%'}}
-  />
-</Box> */}
-            {/* </Paper> */}
+
+           <Lottie animationData={loginAnimation} loop={true}/>
+
           </Grid>
           <Grid
         size={{ xs: 12, sm: 6, md: 6 }}
@@ -145,7 +123,7 @@ const LoginPage = () => {
           >
             <Box sx={{ position: "absolute", top: 4,left:4 }}>
         <img
-          src={companyLogo} // <-- adjust path as needed
+          src={companyLogo}
           alt="Logo"
           style={{ width: 100, height: 40, borderRadius: "8px" }}
         />
@@ -156,9 +134,10 @@ const LoginPage = () => {
               fontWeight="bold"
               textAlign="center"
               gutterBottom
-              sx={{ mb: 3, mt:2}}
+              sx={{ mb: 3, mt:2, textTransform: "none"}}
+
             >
-              LOGIN
+              Login
             </Typography>
 
             <Stack spacing={2}>
@@ -220,7 +199,7 @@ const LoginPage = () => {
                     fontSize: "14.5px",
                   },
                   '& .MuiOutlinedInput-root': {
-      borderRadius: '10px', // pill shape
+      borderRadius: '10px', 
       fontFamily: 'Poppins',
       '& fieldset': {
         borderColor: '#ccc',
@@ -234,6 +213,17 @@ const LoginPage = () => {
     }
                 }}
               />
+              <Box textAlign="right">
+            <Typography
+              variant="body2"
+              color= "primary"
+              sx={{ cursor: "pointer", fontFamily: "Poppins", "&:hover": { textDecoration: "underline" }, }}
+              onClick={() => setOpenForgotDialog(true)}
+            >
+              Forgot password?
+            </Typography>
+          </Box>
+
               {apiError && (
                 <Typography color="error" textAlign="center">
                   {apiError}
@@ -242,7 +232,7 @@ const LoginPage = () => {
               <Box display="flex" justifyContent= "center">
               <Button
                 variant="contained"
-                sx={{ borderRadius: 2, mt: 1, width: "40%", fontFamily: "Poppins" }}
+                sx={{ borderRadius: 2, width: "33%", fontFamily: "Poppins", textTransform: "none", backgroundColor: "#0077B6" }}
                 onClick={handleSubmit}
 
               >
@@ -251,14 +241,191 @@ const LoginPage = () => {
               </Box>
             </Stack>
             </Paper>
-          </Grid>
+      {/*forgot password dialog*/}
+      <Dialog
+  open={openForgotDialog}
+  onClose={() => setOpenForgotDialog(false)}
+  PaperProps={{
+    sx: {
+      borderRadius: 4,
+      p: 3,
+      width: 400,
+      maxWidth: "90%",
+    },
+  }}
+>
+  <DialogTitle
+    sx={{
+      fontFamily: "Poppins",
+      fontSize: "1.5rem",
+      textAlign: "center",
+      pb:3
+    }}
+  >
+    Forgot Password
+  </DialogTitle>
 
-          {/* Right Side - Image */}
+  <DialogContent>
+    <Typography
+      sx={{
+        fontFamily: "Poppins",
+        mb: 2,
+        fontSize: "0.95rem",
+        textAlign: "center",
+      }}
+    >
+      Please enter your registered email address.
+    </Typography>
+
+    <TextField
+      fullWidth
+      size="small"
+      label="Email Address"
+      variant="outlined"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      sx={{ fontFamily: "Poppins", mb: 1 }}
+    />
+  </DialogContent>
+
+  <DialogActions
+    sx={{ justifyContent: "space-between", px: 3, pb: 2}}
+  >
+    <Button
+      onClick={() => setOpenForgotDialog(false)}
+      sx={{ fontFamily: "Poppins", textTransform: "none" }}
+    >
+      Cancel
+    </Button>
+    <Button
+      variant="contained"
+      onClick={async () => {
+        try {
+          const response = await axios.post(
+            "http://192.168.172.227:8000/auth/forgot_password_token",
+            {
+              email: email,
+            }
+          );
+          const token = response.data.token;
+          localStorage.setItem("resetToken", token);
+          console.log("token", token);
+          setOpenForgotDialog(false);
+          setOpenResetDialog(true);
+          setEmail("");
+        } catch (error) {
+          console.error("Error sending reset email", error);
+        }
+      }}
+      sx={{
+        fontFamily: "Poppins",
+        textTransform: "none",
+      }}
+    >
+      Continue
+    </Button>
+  </DialogActions>
+</Dialog>
+
+      {/* Reset password */}
+      <Dialog
+      open={openResetDialog}
+      onClose={() => setOpenResetDialog(false)}
+      PaperProps={{
+        sx: { borderRadius: 4, p: 3, minWidth: 400 },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          fontFamily: "Poppins",
+          fontWeight: 600,
+          fontSize: "1.5rem",
+          textAlign: "center",
+        }}
+      >
+        Reset Password
+      </DialogTitle>
+
+      <DialogContent
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
+          pt: 2,
+        }}
+      >
+        <Typography fontFamily="Poppins" fontWeight={500} sx={{display: "flex", alignItems: "center", justifyContent:"center"}}>
+          Enter your new password:
+        </Typography>
+        <TextField
+          size="small"
+          label="New Password"
+          type={showPassword ? "text" : "password"}
+          fullWidth
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          variant="outlined"
+          sx={{ fontFamily: "Poppins" }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  edge="end"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label="toggle password visibility"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </DialogContent>
+
+      <DialogActions sx={{ justifyContent: "space-between", pt: 2 }}>
+        <Button
+          onClick={() => setOpenResetDialog(false)}
+          sx={{ fontFamily: "Poppins", textTransform: "none" }}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          onClick={
+            async () => {
+              try{
+                const token = localStorage.getItem("resetToken"); 
+
+                const res = await axios.post("http://192.168.172.227:8000/auth/reset-password", {
+                  token: token,
+                  new_password: newPassword,
+                });
+                
+                setOpenResetDialog(false);
+                setNewPassword("");
+                localStorage.removeItem("resetToken");
+
+              }catch(err) {
+                console.error("Reset failed", err)
+              }
+            }
+          }
+          sx={{ fontFamily: "Poppins", textTransform: "none" }}
+        >
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
+          </Grid>
           
       </Grid>
-    
     </Box>
   );
 };
 
 export default LoginPage;
+
+
+ // "homepage": "/cmsui",
+
+ //APP.js la router la add pannanum
