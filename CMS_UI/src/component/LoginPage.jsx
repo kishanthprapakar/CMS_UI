@@ -13,6 +13,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -20,9 +22,9 @@ import axios from "axios";
 import "@fontsource/poppins";
 import Lottie from "lottie-react";
 import companyLogo from "../assets/company_logo.jpg";
-import PersonIcon from "@mui/icons-material/Person";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import loginAnimation from "../assets/loginAnimation.json";
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = () => {
   //username && password state
@@ -39,8 +41,9 @@ const LoginPage = () => {
   const [newPassword, setNewPassword] = useState("");
 
   //API baseName
-  const baseURL = "http://192.168.172.227:8000";
+  const baseURL = "http://192.168.223.227:8000";
 
+  //handle submit function
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
@@ -56,7 +59,19 @@ const LoginPage = () => {
 
       if (token) {
         localStorage.setItem("access_token", token);
+
+      const decoded = jwtDecode(token);
+      const extractedUsername = decoded?.sub || ""; // assuming "sub" contains username
+      localStorage.setItem("username", extractedUsername);
+
+      setLoginSnackBar(true);
+
+      setTimeout(() => {
         navigate("/dashboard");
+      },500);
+
+      // navigate("/dashboard");
+        
       } else {
         setApiError("Invalid credentials");
       }
@@ -66,9 +81,13 @@ const LoginPage = () => {
     // navigate("/dashboard");
   };
 
+  //handle password visibility
   const handleTogglePassword = () => {
     setShowPassword((prev) => !prev);
   };
+
+  //snackbar state
+  const [loginSnackBar, setLoginSnackBar] = useState(false);
 
   return (
     <Box
@@ -111,15 +130,21 @@ const LoginPage = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            p: { xs: 3, sm: 4 },
           }}
         >
           <Paper
             elevation={4}
             sx={{
-              borderRadius: 5,
-              p: 4,
-              height: "100%",
+              // width: "35vh",
+              // height: "35vh",
+              
+              pl:6,
+              pr:6,
+              pt:4,
+              pb:4,
+
+              //p:4
+              borderRadius: 4,
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -145,21 +170,29 @@ const LoginPage = () => {
             </Typography>
 
             <Stack spacing={2}>
+
               <TextField
                 fullWidth
                 label="Enter Username"
                 size="small"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton edge="end">
-                        <PersonIcon sx={{ fontSize: "22px" }} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+                // InputProps={{
+                //   endAdornment: (
+                //     <InputAdornment position="end">
+                //       {/* <IconButton edge="end"> */}
+                //         <PersonIcon sx={{ fontSize: "22px" }} />
+                //       {/* </IconButton> */}
+                //     </InputAdornment>
+                //   ),
+                // }}
+                // InputProps={{
+                //   startAdornment: (
+                //     <InputAdornment position="start">
+                //       <PersonIcon sx={{ fontSize: "22px" }} />
+                //     </InputAdornment>
+                //   ),
+                // }}
                 sx={{
                   "& .MuiInputLabel-root": {
                     fontFamily: "Poppins",
@@ -336,7 +369,7 @@ const LoginPage = () => {
                 sx={{
                   fontFamily: "Poppins",
                   textTransform: "none",
-                  borderRadius: 6
+                  borderRadius: 4
                 }}
               >
                 Continue
@@ -443,6 +476,33 @@ const LoginPage = () => {
           </Dialog>
         </Grid>
       </Grid>
+      <Snackbar
+  open={loginSnackBar}
+  autoHideDuration={1300}
+  onClose={() => setLoginSnackBar(false)}
+  anchorOrigin={{ vertical: "top", horizontal: "right" }}
+  sx={{p:0}}
+>
+  <Alert
+    // onClose={() => setLoginSnackBar(false)}
+    severity="success"
+    sx={{
+      // width: "100%",
+      background: "linear-gradient( 132.6deg,  rgba(71,139,214,1) 100%);linear-gradient( 109.6deg,  rgba(30,198,198,1) 11.3%, rgba(47,127,164,1) 50.1%, rgba(6,92,147,1) 100.2% );radial-gradient( circle 950px at 2.5% 8%,  rgba(44,103,176,1) 0%, rgba(35,56,136,1) 90% );",
+      color: "white",
+      fontFamily: "Poppins",
+      borderRadius: 2,
+      boxShadow: 6,
+      "& .MuiAlert-icon": {
+      // color: "#2CFF05",
+      color: "white"
+    },
+    }}
+  >
+    Login Successfully!
+  </Alert>
+</Snackbar>
+
     </Box>
   );
 };
